@@ -1,0 +1,32 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rsbuild build",
+    "check": "biome check --write",
+    "dev": "rsbuild dev --open",
+    "format": "biome format --write",
+    "preview": "rsbuild preview"
+  },
+  "dependencies": {
+    "@hey-api/client-fetch": "^0.1.10",
+    "@tanstack/react-query": "^5.51.5",
+    "clsx": "^2.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.4.0",
+    "tailwind-variants": "^0.2.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@hey-api/openapi-ts": "^0.49.0",
+    "@rsbuild/core": "1.0.1-beta.3",
+    "@rsbuild/plugin-react": "1.0.1-beta.3",
+    "@rsdoctor/rspack-plugin": "^0.3.8",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.3"
+  }
+}
