@@ -1,3 +1,6 @@
+from collections.abc import Generator
+from typing import Any
+
 from sqlalchemy import create_engine
 from sqlmodel import Session, SQLModel
 
@@ -10,10 +13,10 @@ engine = create_engine(
 )
 
 
-def get_db():
+def get_db() -> Generator[Session, Any, None]:
     with Session(engine) as session:
         yield session
 
 
-def init_db():
+def init_db() -> None:
     SQLModel.metadata.create_all(engine)

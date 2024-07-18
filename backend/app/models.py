@@ -15,6 +15,11 @@ class UserPublic(UserBase):
     id: int
 
 
+class UserUpdateMe(SQLModel):
+    email: EmailStr | None = Field(default=None, max_length=255)
+    username: str | None = Field(default=None, max_length=255)
+
+
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True, description="")
     hashed_password: str = Field(description="")
@@ -23,3 +28,7 @@ class User(UserBase, table=True):
 class Token(SQLModel):
     access_token: str
     token_type: str = "Bearer"
+
+
+class TokenPayload(SQLModel):
+    sub: int | None
