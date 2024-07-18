@@ -1,6 +1,9 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 
 from app.api.main import api_router
@@ -13,7 +16,7 @@ def custom_generate_unique_id(route: APIRoute) -> str:
 
 
 @asynccontextmanager
-async def start_up(app: FastAPI):  # noqa: ARG001
+async def start_up(app: FastAPI) -> AsyncGenerator[None, Any]:  # noqa: ARG001
     init_db()
     yield
 
@@ -26,5 +29,19 @@ app = FastAPI(
     debug=settings.DEBUG,
     lifespan=start_up,
 )
+
+origins = [
+    "http://localhost:3000",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.include_router(api_router, prefix=f"{settings.API_V1_STR}")
