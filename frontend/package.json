@@ -11,12 +11,21 @@
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.1.10",
-    "@tanstack/react-query": "^5.51.5",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-navigation-menu": "^1.2.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
+    "@radix-ui/react-tooltip": "^1.1.2",
+    "@tanstack/react-query": "^5.51.9",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "lucide-react": "^0.408.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.1",
+    "react-router-dom": "6.25.1",
     "tailwind-merge": "^2.4.0",
-    "tailwind-variants": "^0.2.1"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
@@ -24,9 +33,11 @@
     "@rsbuild/core": "1.0.1-beta.3",
     "@rsbuild/plugin-react": "1.0.1-beta.3",
     "@rsdoctor/rspack-plugin": "^0.3.8",
+    "@tanstack/react-query-devtools": "^5.51.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "tailwindcss": "^3.4.6",
     "typescript": "^5.5.3"
-  }
+  },
+  "trustedDependencies": ["@biomejs/biome", "core-js"]
 }

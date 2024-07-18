@@ -1,5 +1,5 @@
-import axios from 'axios';
-import * as fs from 'node:fs';
+import axios from "axios";
+import * as fs from "node:fs";
 
 async function downloadOpenAPIFile(url, filePath) {
   try {
@@ -8,9 +8,9 @@ async function downloadOpenAPIFile(url, filePath) {
       filePath,
       JSON.stringify(response.data, null, 2),
     );
-    console.log('File successfully downloaded');
+    console.log("File successfully downloaded");
   } catch (err) {
-    console.error('Error downloading the file:', err);
+    console.error("Error downloading the file:", err);
   }
 }
 
@@ -40,14 +40,14 @@ async function modifyOpenAPIFile(filePath) {
       filePath,
       JSON.stringify(openapiContent, null, 2),
     );
-    console.log('File successfully modified');
+    console.log("File successfully modified");
   } catch (err) {
-    console.error('Error modifying the file:', err);
+    console.error("Error modifying the file:", err);
   }
 }
 
-const url = 'http://localhost:8000/api/v1/openapi.json';
-const filePath = './openapi.json';
+const url = "http://localhost:8000/api/v1/openapi.json";
+const filePath = "./openapi.json";
 
 async function main() {
   await downloadOpenAPIFile(url, filePath);

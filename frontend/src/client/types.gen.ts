@@ -70,43 +70,43 @@ export type UpdateUserMeResponse = UserPublic;
 export type UpdateUserMeError = HTTPValidationError;
 
 export type $OpenApiTs = {
-  '/api/v1/auth/register': {
+  "/api/v1/auth/register": {
     post: {
       req: RegisterUserData;
       res: {
         /**
          * The Register user
          */
-        '201': UserPublic;
+        "201": UserPublic;
         /**
          * Validation Error
          */
-        '422': HTTPValidationError;
+        "422": HTTPValidationError;
       };
     };
   };
-  '/api/v1/auth/login/access-token': {
+  "/api/v1/auth/login/access-token": {
     post: {
       req: LoginAccessTokenData;
       res: {
         /**
          * Successful Response
          */
-        '200': Token;
+        "200": Token;
         /**
          * Validation Error
          */
-        '422': HTTPValidationError;
+        "422": HTTPValidationError;
       };
     };
   };
-  '/api/v1/users/me': {
+  "/api/v1/users/me": {
     get: {
       res: {
         /**
          * Successful Response
          */
-        '200': UserPublic;
+        "200": UserPublic;
       };
     };
     patch: {
@@ -115,11 +115,11 @@ export type $OpenApiTs = {
         /**
          * Successful Response
          */
-        '200': UserPublic;
+        "200": UserPublic;
         /**
          * Validation Error
          */
-        '422': HTTPValidationError;
+        "422": HTTPValidationError;
       };
     };
   };

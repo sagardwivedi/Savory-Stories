@@ -4,7 +4,7 @@ import {
   client,
   type Options,
   urlSearchParamsBodySerializer,
-} from '@hey-api/client-fetch';
+} from "@hey-api/client-fetch";
 import type {
   RegisterUserData,
   RegisterUserError,
@@ -17,7 +17,7 @@ import type {
   UpdateUserMeData,
   UpdateUserMeError,
   UpdateUserMeResponse,
-} from './types.gen';
+} from "./types.gen";
 
 /**
  * Register an user
@@ -48,7 +48,7 @@ export const registerUser = (options: Options<RegisterUserData>) => {
     RegisterUserError
   >({
     ...options,
-    url: '/api/v1/auth/register',
+    url: "/api/v1/auth/register",
   });
 };
 
@@ -76,9 +76,9 @@ export const loginAccessToken = (options: Options<LoginAccessTokenData>) => {
     ...options,
     ...urlSearchParamsBodySerializer,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    url: '/api/v1/auth/login/access-token',
+    url: "/api/v1/auth/login/access-token",
   });
 };
 
@@ -88,7 +88,7 @@ export const loginAccessToken = (options: Options<LoginAccessTokenData>) => {
 export const readUser = (options?: Options) => {
   return (options?.client ?? client).get<ReadUserResponse, ReadUserError>({
     ...options,
-    url: '/api/v1/users/me',
+    url: "/api/v1/users/me",
   });
 };
 
@@ -101,6 +101,6 @@ export const updateUserMe = (options: Options<UpdateUserMeData>) => {
     UpdateUserMeError
   >({
     ...options,
-    url: '/api/v1/users/me',
+    url: "/api/v1/users/me",
   });
 };
