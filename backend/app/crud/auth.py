@@ -15,7 +15,7 @@ def get_user_by_username(*, session: Session, username: str) -> User | None:
     return session.exec(statement=statment).first()
 
 
-def create_user(*, session: Session, user_in: UserCreate):
+def create_user(*, session: Session, user_in: UserCreate) -> User:
     db_obj = User.model_validate(
         user_in,
         update={"hashed_password": get_hash_password(user_in.password)},
@@ -26,7 +26,7 @@ def create_user(*, session: Session, user_in: UserCreate):
     return db_obj
 
 
-def authenticate(*, session: Session, username: str, password: str):
+def authenticate(*, session: Session, username: str, password: str) -> User | None:
     db_user = get_user_by_email(
         session=session, email=username
     ) or get_user_by_username(session=session, username=username)

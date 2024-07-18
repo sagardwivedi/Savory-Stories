@@ -74,7 +74,7 @@ def register_user(*, session: SessionDep, user_in: UserCreate):
 def login_access_token(
     session: SessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-):
+) -> Token:
     """
     Get an access token for authentication.
 
@@ -94,7 +94,10 @@ def login_access_token(
         session=session, username=form_data.username, password=form_data.password
     )
     if not user:
-        raise HTTPException(status_code=400, detail="Incorrect email or password")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password",
+        )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(user.id, access_token_expires)
     return Token(access_token=access_token, token_type="Bearer")
