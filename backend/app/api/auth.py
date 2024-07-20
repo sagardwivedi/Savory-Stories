@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -13,19 +13,19 @@ from app.crud.auth import (
     get_user_by_username,
 )
 from app.dependencies import SessionDep
-from app.models import Token, UserCreate, UserPublic
+from app.models import Token, UserCreate, UserRead
 
 router = APIRouter()
 
 
 @router.post(
     "/register",
-    response_model=UserPublic,
+    response_model=UserRead,
     status_code=status.HTTP_201_CREATED,
     summary="Register an user",
     response_description="The Register user",
 )
-def register_user(*, session: SessionDep, user_in: UserCreate):
+def register_user(*, session: SessionDep, user_in: UserCreate) -> Any:
     """
     Register a user with all the necessary information.
 
@@ -34,7 +34,7 @@ def register_user(*, session: SessionDep, user_in: UserCreate):
     - `user_in (UserCreate)`: User input data required for registration.
 
     ### Returns:
-    - `UserPublic`: The registered user information excluding sensitive data.
+    - `UserRead`: The registered user information excluding sensitive data.
 
     ### Raises:
     - `HTTPException`: If a user with the provided email already exists.
@@ -99,5 +99,5 @@ def login_access_token(
             detail="Incorrect email or password",
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(user.id, access_token_expires)
+    access_token = create_access_token(user.user_id, access_token_expires)
     return Token(access_token=access_token, token_type="Bearer")
