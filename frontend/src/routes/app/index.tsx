@@ -1,9 +1,6 @@
-import { Outlet } from 'react-router-dom';
+import ExplorerPage from "@/routes/app/explorer";
+import Home from "@/routes/app/home";
+import Root from "@/routes/app/layout";
+import ProfilePage from "@/routes/app/profile";
 
-export default function Root() {
-  return (
-    <main className="flex min-h-dvh">
-      <Outlet />
-    </main>
-  );
-}
+export { Root, ExplorerPage as Explorer, Home, ProfilePage as Profile };

@@ -16,7 +16,6 @@ const isLoggedIn = () => {
 
 const useAuth = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
   const [error, setError] = useState<string | null>(null);
 
   const { data: user, isLoading } = useQuery({
