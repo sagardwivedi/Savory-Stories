@@ -1,9 +1,9 @@
-import { Loader2Icon } from "lucide-react";
-import { type SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, createFileRoute } from '@tanstack/react-router';
+import { Loader2Icon } from 'lucide-react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 
-import type { UserCreate } from "@/client";
-import { Button } from "@/components/ui/button";
+import type { UserCreate } from '@/client';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,34 +11,50 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import useAuth from "@/hooks/useAuth";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import useAuth, { isLoggedIn } from '@/hooks/useAuth';
+import {
+  confirmPasswordRules,
+  emailPattern,
+  namePattern,
+  passwordRules,
+} from '@/lib/utils';
+import { redirect } from '@tanstack/react-router';
 
-export default function SignupPage() {
-  const { error, registerMutation } = useAuth();
-  const { toast } = useToast();
+export const Route = createFileRoute('/auth/signup')({
+  component: SignupPage,
+  beforeLoad: async () => {
+    if (isLoggedIn()) {
+      throw redirect({
+        to: '/',
+      });
+    }
+  },
+});
 
-  const form = useForm<UserCreate>({
-    mode: "onBlur",
-    criteriaMode: "all",
+interface UserRegisterForm extends UserCreate {
+  confirm_password: string;
+}
+
+function SignupPage() {
+  const { signUpMutation } = useAuth();
+
+  const form = useForm<UserRegisterForm>({
+    mode: 'onBlur',
+    criteriaMode: 'all',
     defaultValues: {
-      email: "",
-      password: "",
-      username: "",
+      email: '',
+      password_hash: '',
+      username: '',
+      confirm_password: '',
     },
   });
 
   const onSubmit: SubmitHandler<UserCreate> = async (data) => {
     try {
-      await registerMutation.mutateAsync(data);
-    } catch {
-      toast({
-        title: "Uh oh! Something went wrong.",
-        description: error,
-      });
-    }
+      await signUpMutation.mutateAsync(data);
+    } catch {}
   };
 
   return (
@@ -64,21 +80,17 @@ export default function SignupPage() {
                   control={form.control}
                   name="username"
                   rules={{
-                    required: "Username is required",
+                    required: 'Username is required',
                     minLength: {
                       value: 3,
-                      message: "Username must be at least 3 characters long",
+                      message: 'Username must be at least 3 characters long',
                     },
                     maxLength: {
                       value: 20,
                       message:
-                        "Username cannot be more than 20 characters long",
+                        'Username cannot be more than 20 characters long',
                     },
-                    pattern: {
-                      value: /^[a-zA-Z0-9_]*$/,
-                      message:
-                        "Username can only contain letters, numbers, and underscores",
-                    },
+                    pattern: namePattern,
                   }}
                   render={({ field }) => (
                     <FormItem>
@@ -100,11 +112,8 @@ export default function SignupPage() {
                   control={form.control}
                   name="email"
                   rules={{
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: "Please enter a valid email address",
-                    },
+                    required: 'Email is required',
+                    pattern: emailPattern,
                   }}
                   render={({ field }) => (
                     <FormItem>
@@ -125,25 +134,29 @@ export default function SignupPage() {
                 />
                 <FormField
                   control={form.control}
-                  name="password"
-                  rules={{
-                    required: "Password is required",
-                    minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters long",
-                    },
-                    maxLength: {
-                      value: 20,
-                      message:
-                        "Password cannot be more than 20 characters long",
-                    },
-                    pattern: {
-                      value:
-                        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                      message:
-                        "Password must contain at least one letter, one number, and one special character",
-                    },
-                  }}
+                  name="password_hash"
+                  rules={passwordRules()}
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="space-y-2">
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="********"
+                            autoComplete="current-password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirm_password"
+                  rules={confirmPasswordRules(form.getValues)}
                   render={({ field }) => (
                     <FormItem>
                       <div className="space-y-2">
@@ -169,13 +182,13 @@ export default function SignupPage() {
                   {form.formState.isSubmitting ? (
                     <Loader2Icon className="w-6 h-6" />
                   ) : (
-                    "Sign Up"
+                    'Sign Up'
                   )}
                 </Button>
               </form>
             </Form>
             <div className="text-center text-sm text-muted-foreground">
-              Already have an account?{" "}
+              Already have an account?{' '}
               <Link to="/auth/login" className="underline">
                 Log in
               </Link>

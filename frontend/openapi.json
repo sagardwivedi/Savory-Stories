@@ -11,7 +11,7 @@
           "auth"
         ],
         "summary": "Register an user",
-        "description": "Register a user with all the necessary information.\n\n### Args:\n- `session (SessionDep)`: Database session dependency.\n- `user_in (UserCreate)`: User input data required for registration.\n\n### Returns:\n- `UserPublic`: The registered user information excluding sensitive data.\n\n### Raises:\n- `HTTPException`: If a user with the provided email already exists.\n\n### Example:\n```python\n{\n    \"email\": \"user@example.com\",\n    \"full_name\": \"John Doe\",\n    \"password\": \"strongpassword\"\n}\n```",
+        "description": "Register a user with all the necessary information.\n\n### Args:\n- `session (SessionDep)`: Database session dependency.\n- `user_in (UserCreate)`: User input data required for registration.\n\n### Returns:\n- `UserRead`: The registered user information excluding sensitive data.\n\n### Raises:\n- `HTTPException`: If a user with the provided email already exists.\n\n### Example:\n```python\n{\n    \"email\": \"user@example.com\",\n    \"full_name\": \"John Doe\",\n    \"password\": \"strongpassword\"\n}\n```",
         "operationId": "register_user",
         "requestBody": {
           "content": {
@@ -29,7 +29,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserPublic"
+                  "$ref": "#/components/schemas/UserRead"
                 }
               }
             }
@@ -102,7 +102,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserPublic"
+                  "$ref": "#/components/schemas/UserRead"
                 }
               }
             }
@@ -124,7 +124,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserUpdateMe"
+                "$ref": "#/components/schemas/UserUpdate"
               }
             }
           },
@@ -136,7 +136,120 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserPublic"
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/profile-picture": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get Profile Picture",
+        "description": "Serve the profile picture of a user.\n\n### Arguments:\n- `user_id` (int): The ID of the user whose profile picture is requested.\n- `session` (Session): The database session.\n\n### Returns:\n- `FileResponse`: The requested image file.",
+        "operationId": "get_profile_picture",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Upload Profile Picture",
+        "description": "Uploads a new profile picture for the currently logged-in user.\n\n### Arguments:\n- `file` (UploadFile): The image file to upload.\n- `session` (Session): The database session.\n- `current_user` (User): The currently logged-in user.\n\n### Returns:\n- `JSONResponse`: Confirmation message and the updated profile picture path.",
+        "operationId": "upload_profile_picture",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_user-upload_profile_picture"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update Profile Picture",
+        "description": "Uploads a new profile picture for the currently logged-in user.\n\n**Arguments:**\n- `session` (Session): The database session.\n- `current_user` (User): The currently logged-in user.\n- `profile_picture` (UploadFile): The image file to upload.\n\n**Returns:**\n- `User`: The updated user data.",
+        "operationId": "update_profile_picture",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_user-update_profile_picture"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
                 }
               }
             }
@@ -219,6 +332,34 @@
         ],
         "title": "Body_auth-login_access_token"
       },
+      "Body_user-update_profile_picture": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_user-update_profile_picture"
+      },
+      "Body_user-upload_profile_picture": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_user-upload_profile_picture"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -252,81 +393,29 @@
       },
       "UserCreate": {
         "properties": {
-          "email": {
-            "type": "string",
-            "maxLength": 255,
-            "format": "email",
-            "title": "Email",
-            "description": ""
-          },
           "username": {
             "type": "string",
-            "maxLength": 100,
-            "minLength": 3,
-            "title": "Username",
-            "description": ""
+            "maxLength": 50,
+            "title": "Username"
           },
-          "password": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 8,
-            "title": "Password",
-            "description": ""
-          }
-        },
-        "type": "object",
-        "required": [
-          "email",
-          "username",
-          "password"
-        ],
-        "title": "UserCreate"
-      },
-      "UserPublic": {
-        "properties": {
           "email": {
             "type": "string",
-            "maxLength": 255,
-            "format": "email",
-            "title": "Email",
-            "description": ""
-          },
-          "username": {
-            "type": "string",
             "maxLength": 100,
-            "minLength": 3,
-            "title": "Username",
-            "description": ""
+            "title": "Email"
           },
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "email",
-          "username",
-          "id"
-        ],
-        "title": "UserPublic"
-      },
-      "UserUpdateMe": {
-        "properties": {
-          "email": {
+          "bio": {
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 255,
-                "format": "email"
+                "maxLength": 500
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Email"
+            "title": "Bio"
           },
-          "username": {
+          "profile_picture": {
             "anyOf": [
               {
                 "type": "string",
@@ -336,11 +425,114 @@
                 "type": "null"
               }
             ],
-            "title": "Username"
+            "title": "Profile Picture"
+          },
+          "password_hash": {
+            "type": "string",
+            "title": "Password Hash"
           }
         },
         "type": "object",
-        "title": "UserUpdateMe"
+        "required": [
+          "username",
+          "email",
+          "password_hash"
+        ],
+        "title": "UserCreate"
+      },
+      "UserRead": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Username"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Email"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "profile_picture": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Picture"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "email",
+          "user_id",
+          "created_at"
+        ],
+        "title": "UserRead"
+      },
+      "UserUpdate": {
+        "properties": {
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          }
+        },
+        "type": "object",
+        "title": "UserUpdate"
       },
       "ValidationError": {
         "properties": {

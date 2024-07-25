@@ -5,172 +5,248 @@ export const $Body_auth_login_access_token = {
     grant_type: {
       anyOf: [
         {
-          type: "string",
-          pattern: "password",
+          type: 'string',
+          pattern: 'password',
         },
         {
-          type: "null",
+          type: 'null',
         },
       ],
-      title: "Grant Type",
+      title: 'Grant Type',
     },
     username: {
-      type: "string",
-      title: "Username",
+      type: 'string',
+      title: 'Username',
     },
     password: {
-      type: "string",
-      title: "Password",
+      type: 'string',
+      title: 'Password',
     },
     scope: {
-      type: "string",
-      title: "Scope",
-      default: "",
+      type: 'string',
+      title: 'Scope',
+      default: '',
     },
     client_id: {
       anyOf: [
         {
-          type: "string",
+          type: 'string',
         },
         {
-          type: "null",
+          type: 'null',
         },
       ],
-      title: "Client Id",
+      title: 'Client Id',
     },
     client_secret: {
       anyOf: [
         {
-          type: "string",
+          type: 'string',
         },
         {
-          type: "null",
+          type: 'null',
         },
       ],
-      title: "Client Secret",
+      title: 'Client Secret',
     },
   },
-  type: "object",
-  required: ["username", "password"],
-  title: "Body_auth-login_access_token",
+  type: 'object',
+  required: ['username', 'password'],
+  title: 'Body_auth-login_access_token',
+} as const;
+
+export const $Body_user_update_profile_picture = {
+  properties: {
+    file: {
+      type: 'string',
+      format: 'binary',
+      title: 'File',
+    },
+  },
+  type: 'object',
+  required: ['file'],
+  title: 'Body_user-update_profile_picture',
+} as const;
+
+export const $Body_user_upload_profile_picture = {
+  properties: {
+    file: {
+      type: 'string',
+      format: 'binary',
+      title: 'File',
+    },
+  },
+  type: 'object',
+  required: ['file'],
+  title: 'Body_user-upload_profile_picture',
 } as const;
 
 export const $HTTPValidationError = {
   properties: {
     detail: {
       items: {
-        $ref: "#/components/schemas/ValidationError",
+        $ref: '#/components/schemas/ValidationError',
       },
-      type: "array",
-      title: "Detail",
+      type: 'array',
+      title: 'Detail',
     },
   },
-  type: "object",
-  title: "HTTPValidationError",
+  type: 'object',
+  title: 'HTTPValidationError',
 } as const;
 
 export const $Token = {
   properties: {
     access_token: {
-      type: "string",
-      title: "Access Token",
+      type: 'string',
+      title: 'Access Token',
     },
     token_type: {
-      type: "string",
-      title: "Token Type",
-      default: "Bearer",
+      type: 'string',
+      title: 'Token Type',
+      default: 'Bearer',
     },
   },
-  type: "object",
-  required: ["access_token"],
-  title: "Token",
+  type: 'object',
+  required: ['access_token'],
+  title: 'Token',
 } as const;
 
 export const $UserCreate = {
   properties: {
-    email: {
-      type: "string",
-      maxLength: 255,
-      format: "email",
-      title: "Email",
-      description: "",
-    },
     username: {
-      type: "string",
-      maxLength: 100,
-      minLength: 3,
-      title: "Username",
-      description: "",
+      type: 'string',
+      maxLength: 50,
+      title: 'Username',
     },
-    password: {
-      type: "string",
-      maxLength: 100,
-      minLength: 8,
-      title: "Password",
-      description: "",
-    },
-  },
-  type: "object",
-  required: ["email", "username", "password"],
-  title: "UserCreate",
-} as const;
-
-export const $UserPublic = {
-  properties: {
     email: {
-      type: "string",
-      maxLength: 255,
-      format: "email",
-      title: "Email",
-      description: "",
-    },
-    username: {
-      type: "string",
+      type: 'string',
       maxLength: 100,
-      minLength: 3,
-      title: "Username",
-      description: "",
+      title: 'Email',
     },
-    id: {
-      type: "integer",
-      title: "Id",
-    },
-  },
-  type: "object",
-  required: ["email", "username", "id"],
-  title: "UserPublic",
-} as const;
-
-export const $UserUpdateMe = {
-  properties: {
-    email: {
+    bio: {
       anyOf: [
         {
-          type: "string",
-          maxLength: 255,
-          format: "email",
+          type: 'string',
+          maxLength: 500,
         },
         {
-          type: "null",
+          type: 'null',
         },
       ],
-      title: "Email",
+      title: 'Bio',
     },
-    username: {
+    profile_picture: {
       anyOf: [
         {
-          type: "string",
+          type: 'string',
           maxLength: 255,
         },
         {
-          type: "null",
+          type: 'null',
         },
       ],
-      title: "Username",
+      title: 'Profile Picture',
+    },
+    password_hash: {
+      type: 'string',
+      title: 'Password Hash',
     },
   },
-  type: "object",
-  title: "UserUpdateMe",
+  type: 'object',
+  required: ['username', 'email', 'password_hash'],
+  title: 'UserCreate',
+} as const;
+
+export const $UserRead = {
+  properties: {
+    username: {
+      type: 'string',
+      maxLength: 50,
+      title: 'Username',
+    },
+    email: {
+      type: 'string',
+      maxLength: 100,
+      title: 'Email',
+    },
+    bio: {
+      anyOf: [
+        {
+          type: 'string',
+          maxLength: 500,
+        },
+        {
+          type: 'null',
+        },
+      ],
+      title: 'Bio',
+    },
+    profile_picture: {
+      anyOf: [
+        {
+          type: 'string',
+          maxLength: 255,
+        },
+        {
+          type: 'null',
+        },
+      ],
+      title: 'Profile Picture',
+    },
+    user_id: {
+      type: 'integer',
+      title: 'User Id',
+    },
+    created_at: {
+      type: 'string',
+      format: 'date-time',
+      title: 'Created At',
+    },
+  },
+  type: 'object',
+  required: ['username', 'email', 'user_id', 'created_at'],
+  title: 'UserRead',
+} as const;
+
+export const $UserUpdate = {
+  properties: {
+    username: {
+      anyOf: [
+        {
+          type: 'string',
+        },
+        {
+          type: 'null',
+        },
+      ],
+      title: 'Username',
+    },
+    email: {
+      anyOf: [
+        {
+          type: 'string',
+        },
+        {
+          type: 'null',
+        },
+      ],
+      title: 'Email',
+    },
+    bio: {
+      anyOf: [
+        {
+          type: 'string',
+        },
+        {
+          type: 'null',
+        },
+      ],
+      title: 'Bio',
+    },
+  },
+  type: 'object',
+  title: 'UserUpdate',
 } as const;
 
 export const $ValidationError = {
@@ -179,26 +255,26 @@ export const $ValidationError = {
       items: {
         anyOf: [
           {
-            type: "string",
+            type: 'string',
           },
           {
-            type: "integer",
+            type: 'integer',
           },
         ],
       },
-      type: "array",
-      title: "Location",
+      type: 'array',
+      title: 'Location',
     },
     msg: {
-      type: "string",
-      title: "Message",
+      type: 'string',
+      title: 'Message',
     },
     type: {
-      type: "string",
-      title: "Error Type",
+      type: 'string',
+      title: 'Error Type',
     },
   },
-  type: "object",
-  required: ["loc", "msg", "type"],
-  title: "ValidationError",
+  type: 'object',
+  required: ['loc', 'msg', 'type'],
+  title: 'ValidationError',
 } as const;

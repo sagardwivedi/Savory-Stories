@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { createLazyFileRoute, Link } from '@tanstack/react-router';
 
-import { Footer, Header } from '@/components/common';
+import { Footer, Header } from '@/components/Landing';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -11,7 +11,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-export default function App() {
+export const Route = createLazyFileRoute('/')({
+  component: Index,
+});
+
+function Index() {
   return (
     <div className="flex flex-col min-h-dvh">
       <Header />
@@ -70,7 +74,7 @@ export default function App() {
               <CardComponent
                 title="Profile"
                 description="Showcase your culinary skills and connect with others."
-                image="/homemade-pasta-carbonara.webp"
+                image="/profile.jpeg"
                 contentTitle="Your culinary profile"
                 contentDescription="Share your recipes, connect with others, and showcase your culinary skills."
                 linkText="View Your Profile"

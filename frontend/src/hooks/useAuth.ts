@@ -1,80 +1,93 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { AxiosError } from 'axios';
 
 import {
   type Body_auth_login_access_token as AccessToken,
+  type ApiError,
   type UserCreate,
+  type UserRead,
   loginAccessToken,
   readUser,
   registerUser,
-} from "@/client";
+} from '@/client';
+import useCustomToast from './useCustomToast';
 
 const isLoggedIn = () => {
-  return localStorage.getItem("access_token") !== null;
+  return localStorage.getItem('access_token') !== null;
 };
 
 const useAuth = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["currentUser"],
+  const showToast = useCustomToast();
+  const queryClient = useQueryClient();
+  const { data: user, isLoading } = useQuery<UserRead | null, Error>({
+    queryKey: ['currentUser'],
     queryFn: readUser,
     enabled: isLoggedIn(),
   });
 
-  const register = async (data: UserCreate) => {
-    const response = await registerUser({
-      body: data,
-    });
-    return response;
-  };
+  const signUpMutation = useMutation({
+    mutationFn: (data: UserCreate) => registerUser({ requestBody: data }),
 
-  const registerMutation = useMutation({
-    mutationFn: register,
-    onSuccess: (data) => {
-      if (data) {
-        navigate("/home");
-      }
+    onSuccess: () => {
+      navigate({ to: '/auth/login' });
+      showToast('Success!', 'User created successfully.', 'success');
     },
-    onError: (err) => {
-      setError(err.message);
+    onError: (err: ApiError) => {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      let errDetail = (err.body as any)?.detail;
+
+      if (err instanceof AxiosError) {
+        errDetail = err.message;
+      }
+
+      showToast('Something went wrong.', `${errDetail}`, 'error');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 
   const login = async (data: AccessToken) => {
     const response = await loginAccessToken({
-      body: data,
+      formData: data,
     });
-    if (response.data) {
-      localStorage.setItem("access_token", response.data.access_token);
-    }
+    localStorage.setItem('access_token', response.access_token);
   };
 
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: () => {
-      navigate("/home");
+      navigate({ to: '/' });
     },
-    onError: (err) => {
-      setError(err.message);
+    onError: (err: ApiError) => {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      let errDetail = (err.body as any)?.detail;
+
+      if (err instanceof AxiosError) {
+        errDetail = err.message;
+      }
+
+      if (Array.isArray(errDetail)) {
+        errDetail = 'Something went wrong';
+      }
+
+      showToast('Something went wrong.', `${errDetail}`, 'error');
     },
   });
 
   const logout = () => {
-    localStorage.removeItem("access_token");
-    navigate("/auth/login");
+    localStorage.removeItem('access_token');
+    navigate({ to: '/auth/login' });
   };
 
   return {
+    signUpMutation,
     loginMutation,
-    registerMutation,
     logout,
-    error,
     user,
     isLoading,
-    resetError: () => setError(null),
   };
 };
 

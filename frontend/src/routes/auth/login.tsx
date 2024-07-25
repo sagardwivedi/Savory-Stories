@@ -1,9 +1,9 @@
-import { Loader2Icon } from "lucide-react";
-import { type SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, createFileRoute } from '@tanstack/react-router';
+import { Loader2Icon } from 'lucide-react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 
-import type { Body_auth_login_access_token as AccessToken } from "@/client";
-import { Button } from "@/components/ui/button";
+import type { Body_auth_login_access_token as AccessToken } from '@/client';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,33 +11,30 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import useAuth from "@/hooks/useAuth";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import useAuth from '@/hooks/useAuth';
 
-export default function LoginPage() {
-  const { error, loginMutation } = useAuth();
-  const { toast } = useToast();
+export const Route = createFileRoute('/auth/login')({
+  component: LoginPage,
+});
+
+function LoginPage() {
+  const { loginMutation } = useAuth();
 
   const form = useForm<AccessToken>({
-    mode: "onBlur",
-    criteriaMode: "all",
+    mode: 'onBlur',
+    criteriaMode: 'all',
     defaultValues: {
-      password: "",
-      username: "",
+      password: '',
+      username: '',
     },
   });
 
   const onSubmit: SubmitHandler<AccessToken> = async (data) => {
     try {
       await loginMutation.mutateAsync(data);
-    } catch {
-      toast({
-        title: "Uh oh! Something went wrong.",
-        description: error,
-      });
-    }
+    } catch {}
   };
 
   return (
@@ -62,20 +59,20 @@ export default function LoginPage() {
                   control={form.control}
                   name="username"
                   rules={{
-                    required: "Username is required",
+                    required: 'Username is required',
                     minLength: {
                       value: 3,
-                      message: "Username must be at least 3 characters long",
+                      message: 'Username must be at least 3 characters long',
                     },
                     maxLength: {
                       value: 20,
                       message:
-                        "Username cannot be more than 20 characters long",
+                        'Username cannot be more than 20 characters long',
                     },
                     pattern: {
                       value: /^[a-zA-Z0-9_]*$/,
                       message:
-                        "Username can only contain letters, numbers, and underscores",
+                        'Username can only contain letters, numbers, and underscores',
                     },
                   }}
                   render={({ field }) => (
@@ -98,21 +95,21 @@ export default function LoginPage() {
                   control={form.control}
                   name="password"
                   rules={{
-                    required: "Password is required",
+                    required: 'Password is required',
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters long",
+                      message: 'Password must be at least 8 characters long',
                     },
                     maxLength: {
                       value: 20,
                       message:
-                        "Password cannot be more than 20 characters long",
+                        'Password cannot be more than 20 characters long',
                     },
                     pattern: {
                       value:
                         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                       message:
-                        "Password must contain at least one letter, one number, and one special character",
+                        'Password must contain at least one letter, one number, and one special character',
                     },
                   }}
                   render={({ field }) => (
@@ -140,13 +137,13 @@ export default function LoginPage() {
                   {form.formState.isSubmitting ? (
                     <Loader2Icon className="w-6 h-6" />
                   ) : (
-                    "Log In"
+                    'Log In'
                   )}
                 </Button>
               </form>
             </Form>
             <div className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Don't have an account?{' '}
               <Link to="/auth/signup" className="underline">
                 Sign up
               </Link>

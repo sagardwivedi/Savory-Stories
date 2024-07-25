@@ -9,6 +9,14 @@ export type Body_auth_login_access_token = {
   client_secret?: string | null;
 };
 
+export type Body_user_update_profile_picture = {
+  file: Blob | File;
+};
+
+export type Body_user_upload_profile_picture = {
+  file: Blob | File;
+};
+
 export type HTTPValidationError = {
   detail?: Array<ValidationError>;
 };
@@ -19,20 +27,26 @@ export type Token = {
 };
 
 export type UserCreate = {
-  email: string;
   username: string;
-  password: string;
+  email: string;
+  bio?: string | null;
+  profile_picture?: string | null;
+  password_hash: string;
 };
 
-export type UserPublic = {
-  email: string;
+export type UserRead = {
   username: string;
-  id: number;
+  email: string;
+  bio?: string | null;
+  profile_picture?: string | null;
+  user_id: number;
+  created_at: string;
 };
 
-export type UserUpdateMe = {
-  email?: string | null;
+export type UserUpdate = {
   username?: string | null;
+  email?: string | null;
+  bio?: string | null;
 };
 
 export type ValidationError = {
@@ -42,71 +56,77 @@ export type ValidationError = {
 };
 
 export type RegisterUserData = {
-  body: UserCreate;
+  requestBody: UserCreate;
 };
 
-export type RegisterUserResponse = UserPublic;
-
-export type RegisterUserError = HTTPValidationError;
+export type RegisterUserResponse = UserRead;
 
 export type LoginAccessTokenData = {
-  body: Body_auth_login_access_token;
+  formData: Body_auth_login_access_token;
 };
 
 export type LoginAccessTokenResponse = Token;
 
-export type LoginAccessTokenError = HTTPValidationError;
-
-export type ReadUserResponse = UserPublic;
-
-export type ReadUserError = unknown;
+export type ReadUserResponse = UserRead;
 
 export type UpdateUserMeData = {
-  body: UserUpdateMe;
+  requestBody: UserUpdate;
 };
 
-export type UpdateUserMeResponse = UserPublic;
+export type UpdateUserMeResponse = UserRead;
 
-export type UpdateUserMeError = HTTPValidationError;
+export type GetProfilePictureResponse = unknown;
+
+export type UploadProfilePictureData = {
+  formData: Body_user_upload_profile_picture;
+};
+
+export type UploadProfilePictureResponse = unknown;
+
+export type UpdateProfilePictureData = {
+  formData: Body_user_update_profile_picture;
+};
+
+export type UpdateProfilePictureResponse = UserRead;
 
 export type $OpenApiTs = {
-  "/api/v1/auth/register": {
+  '/api/v1/auth/register': {
     post: {
       req: RegisterUserData;
       res: {
         /**
          * The Register user
          */
-        "201": UserPublic;
+        201: UserRead;
         /**
          * Validation Error
          */
-        "422": HTTPValidationError;
+        422: HTTPValidationError;
       };
     };
   };
-  "/api/v1/auth/login/access-token": {
+  '/api/v1/auth/login/access-token': {
     post: {
       req: LoginAccessTokenData;
       res: {
         /**
          * Successful Response
          */
-        "200": Token;
+        200: Token;
         /**
          * Validation Error
          */
-        "422": HTTPValidationError;
+        422: HTTPValidationError;
       };
     };
   };
-  "/api/v1/users/me": {
+  '/api/v1/users/me': {
     get: {
       res: {
         /**
          * Successful Response
          */
-        "200": UserPublic;
+        200: UserRead;
       };
     };
     patch: {
@@ -115,11 +135,47 @@ export type $OpenApiTs = {
         /**
          * Successful Response
          */
-        "200": UserPublic;
+        200: UserRead;
         /**
          * Validation Error
          */
-        "422": HTTPValidationError;
+        422: HTTPValidationError;
+      };
+    };
+  };
+  '/api/v1/users/profile-picture': {
+    get: {
+      res: {
+        /**
+         * Successful Response
+         */
+        200: unknown;
+      };
+    };
+    post: {
+      req: UploadProfilePictureData;
+      res: {
+        /**
+         * Successful Response
+         */
+        200: unknown;
+        /**
+         * Validation Error
+         */
+        422: HTTPValidationError;
+      };
+    };
+    patch: {
+      req: UpdateProfilePictureData;
+      res: {
+        /**
+         * Successful Response
+         */
+        200: UserRead;
+        /**
+         * Validation Error
+         */
+        422: HTTPValidationError;
       };
     };
   };
