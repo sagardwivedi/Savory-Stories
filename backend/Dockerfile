@@ -28,4 +28,4 @@ COPY ./app /code/app
 EXPOSE 8000
 
 # Use an entrypoint script for better flexibility
-ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0"]
+CMD ["fastapi", "run", "app/main.py", "--port", "8000"]
