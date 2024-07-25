@@ -1,16 +1,16 @@
+import axios from 'axios';
 import type {
   AxiosError,
-  AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
+  AxiosInstance,
 } from 'axios';
-import axios from 'axios';
 
 import { ApiError } from './ApiError';
 import type { ApiRequestOptions } from './ApiRequestOptions';
 import type { ApiResult } from './ApiResult';
-import type { OnCancel } from './CancelablePromise';
 import { CancelablePromise } from './CancelablePromise';
+import type { OnCancel } from './CancelablePromise';
 import type { OpenAPIConfig } from './OpenAPI';
 
 export const isString = (value: unknown): value is string => {
@@ -57,21 +57,15 @@ export const getQueryString = (params: Record<string, unknown>): string => {
     if (value instanceof Date) {
       append(key, value.toISOString());
     } else if (Array.isArray(value)) {
-      for (const v of value) {
-        encodePair(key, v);
-      }
+      value.forEach((v) => encodePair(key, v));
     } else if (typeof value === 'object') {
-      for (const [k, v] of Object.entries(value)) {
-        encodePair(`${key}[${k}]`, v);
-      }
+      Object.entries(value).forEach(([k, v]) => encodePair(`${key}[${k}]`, v));
     } else {
       append(key, value);
     }
   };
 
-  for (const [key, value] of Object.entries(params)) {
-    encodePair(key, value);
-  }
+  Object.entries(params).forEach(([key, value]) => encodePair(key, value));
 
   return qs.length ? `?${qs.join('&')}` : '';
 };
@@ -106,17 +100,15 @@ export const getFormData = (
       }
     };
 
-    for (const [key, value] of Object.entries(options.formData)) {
-      if (value !== undefined && value !== null) {
+    Object.entries(options.formData)
+      .filter(([, value]) => value !== undefined && value !== null)
+      .forEach(([key, value]) => {
         if (Array.isArray(value)) {
-          for (const v of value) {
-            process(key, v);
-          }
+          value.forEach((v) => process(key, v));
         } else {
           process(key, value);
         }
-      }
-    }
+      });
 
     return formData;
   }
@@ -165,12 +157,12 @@ export const getHeaders = async <T>(
     );
 
   if (isStringWithValue(token)) {
-    headers.Authorization = `Bearer ${token}`;
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
   if (isStringWithValue(username) && isStringWithValue(password)) {
     const credentials = base64(`${username}:${password}`);
-    headers.Authorization = `Basic ${credentials}`;
+    headers['Authorization'] = `Basic ${credentials}`;
   }
 
   if (options.body !== undefined) {

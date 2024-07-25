@@ -1,7 +1,7 @@
 import * as fs from 'node:fs/promises';
 import axios, { type AxiosResponse } from 'axios';
 
-const URL: string = 'http://localhost:8000/api/v1/openapi.json';
+const URL: string = `${import.meta.env.FASTAPI_URL}/api/v1/openapi.json`;
 const FILE_PATH: string = './openapi.json';
 
 // Type definitions for OpenAPI components

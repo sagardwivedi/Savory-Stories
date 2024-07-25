@@ -7,7 +7,7 @@ import { OpenAPI } from '@/client';
 import '@/main.css';
 import { routeTree } from '@/routeTree.gen';
 
-OpenAPI.BASE = 'http://localhost:8000';
+OpenAPI.BASE = import.meta.env.FASTAPI_URL;
 OpenAPI.TOKEN = async () => {
   return localStorage.getItem('access_token') || '';
 };
