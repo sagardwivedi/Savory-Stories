@@ -1,4 +1,5 @@
-from typing import Annotated
+from collections.abc import Generator
+from typing import Annotated, Any
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -15,7 +16,7 @@ reusable_oauth2 = OAuth2PasswordBearer(
 )
 
 
-def get_db():
+def get_db() -> Generator[Session, Any, None]:
     with Session(engine) as session:
         yield session
 

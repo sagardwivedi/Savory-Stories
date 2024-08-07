@@ -1,9 +1,11 @@
+import { RouterProvider, createRouter } from "@tanstack/react-router"
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { createRouter, RouterProvider } from "@tanstack/react-router"
-import "./global.css"
-import { routeTree } from "./routeTree.gen"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+import { routeTree } from "@/routeTree.gen"
+import { client } from "@/client/services.gen"
+import "@/global.css"
 
 const router = createRouter({ routeTree })
 const queryClient = new QueryClient()
@@ -13,6 +15,10 @@ declare module "@tanstack/react-router" {
     rourer: typeof router
   }
 }
+
+client.setConfig({
+  baseUrl: "http://localhost:8000",
+})
 
 const rootEl = document.getElementById("root")
 if (rootEl) {

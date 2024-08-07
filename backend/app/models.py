@@ -7,7 +7,7 @@ from sqlmodel import Field, SQLModel
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
     username: str = Field(unique=True, index=True, min_length=3, max_length=255)
-    full_name: str | None = Field(default=None, max_length=255)
+    full_name: str = Field(max_length=255)
 
 
 class UserRead(UserBase):
@@ -25,7 +25,7 @@ class User(UserBase, table=True):
 
 class Token(SQLModel):
     access_token: str
-    token_type: str
+    token_type: str = "Bearer"
 
 
 class TokenPayload(SQLModel):

@@ -23,7 +23,7 @@ def create_user(*, session: Session, user_in: UserCreate) -> User:
     # Create a User model instance from the provided data
     db_obj = User.model_validate(
         user_in,
-        update={"password_hash": get_password_hash(user_in.password)},
+        update={"hashed_password": get_password_hash(user_in.password)},
     )
     # Add the user to the session and commit the transaction
     session.add(db_obj)
