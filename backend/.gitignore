@@ -1,4 +1,4 @@
 __pycache__
 .idea
-sql_app.db
+database.db
 uploaded_images
